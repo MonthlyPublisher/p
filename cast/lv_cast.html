@@ -7,7 +7,43 @@
 <body>
   <cast-media-player></cast-media-player>
   <script>
-    cast.framework.CastReceiverContext.getInstance().start();
+    const context = cast.framework.CastReceiverContext.getInstance();
+    const player = context.getPlayerManager();
+
+    player.setMessageInterceptor(
+        cast.framework.messages.MessageType.LOAD,
+        request => {
+          return new Promise((resolve, reject) => {
+            // Write your own custom code if you would like to see the stream info
+            const onSuccess = function(streamInfo) {
+              const mediaUrl = streamInfo.url;
+              const captionUrl = streamInfo.captionUrl;
+
+              request.media.contentUrl = mediaUrl;
+              request.media.contentType = 'application/dash+xml';
+              request.media.tracks = [{
+                trackId: 1,
+                trackContentId: captionUrl,
+                trackContentType: 'text/vtt',
+                type: cast.framework.messages.TrackType.TEXT
+              }];
+              resolve(request);
+            };
+            const onFailure = function() {
+              reject(new cast.framework.messages.ErrorData(
+                  cast.framework.messages.ErrorType.INVALID_REQUEST));
+            };
+          fetchData(request.media.contentId, onSuccess, onFailure)
+        });
+
+    player.setMessageInterceptor(
+        cast.framework.messages.MessageType.MEDIA_STATUS,
+        status => {
+          status.customData = {};
+          return status;
+        });
+
+    context.start();
   </script>
 </body>
 </html>
