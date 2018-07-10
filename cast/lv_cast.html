@@ -37,16 +37,6 @@
           status.customData = {};
           return status;
         });
-
-    try {
-      player.setMediaPlaybackInfoHandler((loadRequest, playbackConfig) => {
-        console.log("req - " + loadRequest);
-        console.log("cnf - " + playbackConfig);
-      });
-
-    } catch (e) {
-      console.error(e);
-    }
     
     context.start();
   </script>
