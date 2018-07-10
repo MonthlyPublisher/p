@@ -10,6 +10,11 @@
     const context = cast.framework.CastReceiverContext.getInstance();
     const player = context.getPlayerManager();
 
+    player.setMediaPlaybackInfoHandler((loadRequest, playbackConfig) => {
+      console.log("req - " + loadRequest);
+      console.log("cnf - " + playbackConfig);
+    });
+
     player.setMediaUrlResolver(data => {
       return data
     });
