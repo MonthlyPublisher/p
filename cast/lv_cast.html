@@ -15,6 +15,16 @@
         return loadRequestData;
       });
 
+    player.setMessageInterceptor(
+      cast.framework.messages.MessageType.PRECACHE, loadRequestData => {
+        return loadRequestData;
+      });
+
+    player.setMessageInterceptor(
+      cast.framework.messages.MessageType.PRELOAD, loadRequestData => {
+        return loadRequestData;
+      });
+
 
     player.setMessageInterceptor(
         cast.framework.messages.MessageType.MEDIA_STATUS,
