@@ -10,10 +10,10 @@
     const context = cast.framework.CastReceiverContext.getInstance();
     const player = context.getPlayerManager();
 
-    playerManager.setMessageInterceptor(
-    cast.framework.messages.MessageType.LOAD, loadRequestData => {
-      return loadRequestData;
-    });
+    player.setMessageInterceptor(
+      cast.framework.messages.MessageType.LOAD, loadRequestData => {
+        return loadRequestData;
+      });
 
 
     player.setMessageInterceptor(
