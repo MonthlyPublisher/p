@@ -9,7 +9,12 @@
   <script>
     const context = cast.framework.CastReceiverContext.getInstance();
     const player = context.getPlayerManager();
-    
+
+    player.addEventListener(
+      cast.framework.events.EventType.ALL, (e) => {
+        console.log(e);
+    });
+
     context.start();
   </script>
   <div>#1</div>
