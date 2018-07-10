@@ -1,16 +1,13 @@
 <html>
 <head>
-  <title>Example minimum receiver</title>
-  <script src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
+  <script type="text/javascript"
+      src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js">
+  </script>
 </head>
 <body>
-  <video id='media'/>
+  <cast-media-player></cast-media-player>
   <script>
-    window.mediaElement = document.getElementById('media');
-    window.mediaManager = new cast.receiver.MediaManager(window.mediaElement);
-    window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
-    window.castReceiverManager.start();
+    cast.framework.CastReceiverContext.getInstance().start();
   </script>
 </body>
 </html>
-
