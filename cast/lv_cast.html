@@ -10,10 +10,6 @@
     const context = cast.framework.CastReceiverContext.getInstance();
     const player = context.getPlayerManager();
 
-    player.setMediaPlaybackInfoHandler((loadRequest, playbackConfig) => {
-      console.log("req - " + loadRequest);
-      console.log("cnf - " + playbackConfig);
-    });
 
     player.setMediaUrlResolver(data => {
       return data
@@ -42,6 +38,16 @@
           return status;
         });
 
+    try {
+      player.setMediaPlaybackInfoHandler((loadRequest, playbackConfig) => {
+        console.log("req - " + loadRequest);
+        console.log("cnf - " + playbackConfig);
+      });
+
+    } catch (e) {
+      console.error(e);
+    }
+    
     context.start();
   </script>
   <div>#1</div>
