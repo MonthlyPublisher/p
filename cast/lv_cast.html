@@ -9,34 +9,6 @@
   <script>
     const context = cast.framework.CastReceiverContext.getInstance();
     const player = context.getPlayerManager();
-
-
-    player.setMediaUrlResolver(data => {
-      return data
-    });
-    
-    player.setMessageInterceptor(
-      cast.framework.messages.MessageType.LOAD, loadRequestData => {
-        return loadRequestData;
-      });
-
-    player.setMessageInterceptor(
-      cast.framework.messages.MessageType.PRECACHE, loadRequestData => {
-        return loadRequestData;
-      });
-
-    player.setMessageInterceptor(
-      cast.framework.messages.MessageType.PRELOAD, loadRequestData => {
-        return loadRequestData;
-      });
-
-
-    player.setMessageInterceptor(
-        cast.framework.messages.MessageType.MEDIA_STATUS,
-        status => {
-          status.customData = {};
-          return status;
-        });
     
     context.start();
   </script>
