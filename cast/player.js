@@ -83,6 +83,7 @@ Player.prototype.setupCallbacks_ = function() {
         }
         this.request_ = request;
         this.playerManager_.pause();
+        console.log("[0] pause");
         return request;
       });
 };
@@ -192,6 +193,7 @@ Player.prototype.onContentResumeRequested_ = function() {
  * @private
  */
 Player.prototype.onAllAdsCompleted_ = function() {
+  console.log("onAllAdsCompleted_");
   if (this.adsManager_) {
     this.adsManager_.destroy();
   }
@@ -224,5 +226,6 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
 Player.prototype.seek_ = function(time) {
   this.currentContentTime_ = time;
   this.playerManager_.seek(time);
+  console.log("[seek_] play");
   this.playerManager_.play();
 };
