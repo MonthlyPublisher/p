@@ -82,6 +82,7 @@ Player.prototype.setupCallbacks_ = function() {
           self.initIMA_();
         }
         this.request_ = request;
+        this.playerManager_.pause();
         return request;
       });
 };
@@ -141,9 +142,8 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       this.onContentResumeRequested_.bind(this));
 
   try {
-    var ww = document.getElementById("adContainer").offsetWidth;
-    var hh = document.getElementById("adContainer").offsetHeight;
-    this.adsManager_.init(ww, hh, google.ima.ViewMode.FULLSCREEN);
+    this.adsManager_.init(this.mediaElement_.width, this.mediaElement_.height,
+        google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
@@ -192,7 +192,6 @@ Player.prototype.onContentResumeRequested_ = function() {
  * @private
  */
 Player.prototype.onAllAdsCompleted_ = function() {
-  console.log("onAllAdsCompleted_");
   if (this.adsManager_) {
     this.adsManager_.destroy();
   }
@@ -225,6 +224,6 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
 Player.prototype.seek_ = function(time) {
   this.currentContentTime_ = time;
   this.playerManager_.seek(time);
-  console.log("[seek_] play");
   this.playerManager_.play();
 };
+
