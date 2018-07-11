@@ -141,8 +141,9 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       this.onContentResumeRequested_.bind(this));
 
   try {
-    this.adsManager_.init(this.mediaElement_.width, this.mediaElement_.height,
-        google.ima.ViewMode.FULLSCREEN);
+    var ww = document.getElementById("adContainer").offsetWidth;
+    var hh = document.getElementById("adContainer").offsetHeight;
+    this.adsManager_.init(ww, hh, google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
