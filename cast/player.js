@@ -142,6 +142,9 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       this.onContentResumeRequested_.bind(this));
 
   try {
+    var ww = this.mediaElement_.width;
+    var hh = this.mediaElement_.height;
+    console.log("w/h - " + ww + "/" + hh);
     this.adsManager_.init(this.mediaElement_.width, this.mediaElement_.height,
         google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
