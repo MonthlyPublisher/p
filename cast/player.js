@@ -26,6 +26,7 @@ let Player = function() {
   this.context_ = cast.framework.CastReceiverContext.getInstance();
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
+  this.adContainer_ = document.getElementById('adContainer');
 
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
@@ -142,10 +143,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       this.onContentResumeRequested_.bind(this));
 
   try {
-    var ww = this.mediaElement_.width;
-    var hh = this.mediaElement_.height;
-    console.log("w/h - " + ww + "/" + hh);
-    this.adsManager_.init(this.mediaElement_.width, this.mediaElement_.height,
+    this.adsManager_.init(this.adContainer_.offsetWidth, this.adContainer_.offsetHeight,
         google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
@@ -212,10 +210,10 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   }
   let adsRequest = new google.ima.AdsRequest();
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = this.mediaElement_.width;
-  adsRequest.linearAdSlotHeight = this.mediaElement_.height;
-  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.width;
-  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.height / 3;
+  adsRequest.linearAdSlotWidth = this.adContainer_.offsetWidth;
+  adsRequest.linearAdSlotHeight = this.adContainer_.offsetHeight;
+  adsRequest.nonLinearAdSlotWidth = this.adContainer_.offsetWidth;
+  adsRequest.nonLinearAdSlotHeight = this.adContainer_.offsetHeight / 3;
   this.adsLoader_.requestAds(adsRequest);
 };
 
@@ -229,4 +227,3 @@ Player.prototype.seek_ = function(time) {
   this.playerManager_.seek(time);
   this.playerManager_.play();
 };
-
