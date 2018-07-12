@@ -23,6 +23,11 @@
           return status;
         });
 
+    const playbackConfig = new cast.framework.PlaybackConfig();
+    playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
+      console.log(networkRequestInfo);
+    }
+    player.setPlaybackConfig(playbackConfig)
     context.start();
   </script>
   <div>#1</div>
