@@ -87,6 +87,7 @@ Player.prototype.setupCallbacks_ = function() {
       });
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
+    networkRequestInfo.url += "?__gda__=1531375224_034e5c283e7889bddbccc49b0c892a7c"; 
     console.log(networkRequestInfo);
   };
   this.playerManager_.setPlaybackConfig(playbackConfig);
