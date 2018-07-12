@@ -89,8 +89,8 @@ Player.prototype.setupCallbacks_ = function() {
 var playbackConfig = new cast.framework.PlaybackConfig();
 playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
   console.log(networkRequestInfo);
-}
-this.playerManager_.setPlaybackConfig(playbackConfig)
+};
+this.playerManager_.setPlaybackConfig(playbackConfig);
 
 
 /**
