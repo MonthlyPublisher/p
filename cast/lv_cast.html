@@ -1,17 +1,30 @@
-<html manifest="nocache.mf">
+<html>
 <head>
-  <title>IMA Example receiver</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
-  <script src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-  <script type="text/javascript" src="player.js"></script>
+  <script type="text/javascript"
+      src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js">
+  </script>
 </head>
 <body>
-  <div id="adContainer">
-    <cast-media-player id="player"></cast-media-player>
-    <script>
-      var player = new Player();
-    </script>
-  </div>
+  <cast-media-player></cast-media-player>
+  <script>
+    const context = cast.framework.CastReceiverContext.getInstance();
+    const player = context.getPlayerManager();
+
+    player.setMessageInterceptor(
+    cast.framework.messages.MessageType.LOAD, loadRequestData => {
+      return loadRequestData;
+    });
+
+
+    player.setMessageInterceptor(
+        cast.framework.messages.MessageType.MEDIA_STATUS,
+        status => {
+          status.customData = {};
+          return status;
+        });
+
+    context.start();
+  </script>
+  <div>#1</div>
 </body>
 </html>
