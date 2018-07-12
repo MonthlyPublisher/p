@@ -86,6 +86,12 @@ Player.prototype.setupCallbacks_ = function() {
         return request;
       });
 };
+var playbackConfig = new cast.framework.PlaybackConfig();
+playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
+  console.log(networkRequestInfo);
+}
+this.playerManager_.setPlaybackConfig(playbackConfig)
+
 
 /**
  * Sends messages to all connected sender apps.
