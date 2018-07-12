@@ -23,7 +23,7 @@
           return status;
         });
 
-    const playbackConfig = new cast.framework.PlaybackConfig();
+    var playbackConfig = new cast.framework.PlaybackConfig();
     playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
       console.log(networkRequestInfo);
     };
