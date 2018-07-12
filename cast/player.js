@@ -85,12 +85,12 @@ Player.prototype.setupCallbacks_ = function() {
         this.playerManager_.pause();
         return request;
       });
+  var playbackConfig = new cast.framework.PlaybackConfig();
+  playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
+    console.log(networkRequestInfo);
+  };
+  this.playerManager_.setPlaybackConfig(playbackConfig);
 };
-var playbackConfig = new cast.framework.PlaybackConfig();
-playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
-  console.log(networkRequestInfo);
-};
-this.playerManager_.setPlaybackConfig(playbackConfig);
 
 
 /**
