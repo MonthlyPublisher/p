@@ -27,9 +27,6 @@ let Player = function() {
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
-  this.fWidth = document.getElementById("adContainer").offsetWidth;
-  this.fHeight = document.getElementById("adContainer").offsetHeight;
-
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
   options.customNamespaces = {};
@@ -81,15 +78,11 @@ Player.prototype.setupCallbacks_ = function() {
   this.playerManager_.setMessageInterceptor(
       cast.framework.messages.MessageType.LOAD,
       (request) => {
-        if (!this.fWidth || !this.fHeight) {
-          this.fWidth = document.getElementById("adContainer").offsetWidth;
-          this.fHeight = document.getElementById("adContainer").offsetHeight;
-        }
-
         if (!this.request_) {
           self.initIMA_();
         }
         this.request_ = request;
+        this.playerManager_.pause();
         return request;
       });
 };
@@ -147,27 +140,25 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   this.adsManager_.addEventListener(
       google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
       this.onContentResumeRequested_.bind(this));
+
   var events = [google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
-  google.ima.AdEvent.Type.CLICK,
-  google.ima.AdEvent.Type.COMPLETE,
-  google.ima.AdEvent.Type.FIRST_QUARTILE,
-  google.ima.AdEvent.Type.LOADED,
-  google.ima.AdEvent.Type.MIDPOINT,
-  google.ima.AdEvent.Type.PAUSED,
-  google.ima.AdEvent.Type.STARTED,
-  google.ima.AdEvent.Type.THIRD_QUARTILE];
+    google.ima.AdEvent.Type.CLICK,
+    google.ima.AdEvent.Type.COMPLETE,
+    google.ima.AdEvent.Type.FIRST_QUARTILE,
+    google.ima.AdEvent.Type.LOADED,
+    google.ima.AdEvent.Type.MIDPOINT,
+    google.ima.AdEvent.Type.PAUSED,
+    google.ima.AdEvent.Type.STARTED,
+    google.ima.AdEvent.Type.THIRD_QUARTILE];
   
   for (var index in events) {
-    this.adsManager_.addEventListener(events[index], (e) => {console.log(e)});
+    adsManager.addEventListener(events[index], (e) => {console.log(e)}, false, this);
   }
 
-  try {
-    if (!this.fWidth || !this.fHeight) {
-      this.fWidth = document.getElementById("adContainer").offsetWidth;
-      this.fHeight = document.getElementById("adContainer").offsetHeight;
-}
 
-    this.adsManager_.init(300, 150, google.ima.ViewMode.FULLSCREEN);
+  try {
+    this.adsManager_.init(this.mediaElement_.width, this.mediaElement_.height,
+        google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
@@ -232,15 +223,11 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
     this.currentContentTime_ = currentTime;
   }
   let adsRequest = new google.ima.AdsRequest();
-  if (!this.fWidth || !this.fHeight) {
-    this.fWidth = document.getElementById("adContainer").offsetWidth;
-    this.fHeight = document.getElementById("adContainer").offsetHeight;
-}
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = 300;
-  adsRequest.linearAdSlotHeight = 150;
-  adsRequest.nonLinearAdSlotWidth = 300;
-  adsRequest.nonLinearAdSlotHeight = 150;
+  adsRequest.linearAdSlotWidth = this.mediaElement_.width;
+  adsRequest.linearAdSlotHeight = this.mediaElement_.height;
+  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.width;
+  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.height / 3;
   this.adsLoader_.requestAds(adsRequest);
 };
 
