@@ -152,7 +152,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
     google.ima.AdEvent.Type.THIRD_QUARTILE];
   
   for (var index in events) {
-    adsManager.addEventListener(events[index], (e) => {console.log(e)}, false, this);
+    this.adsManager_.addEventListener(events[index], (e) => {console.log(e)}, false, this);
   }
 
 
