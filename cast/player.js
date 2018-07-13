@@ -27,6 +27,9 @@ let Player = function() {
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
+  const fWidth = window.screen.width;
+  const fHeight = window.screen.height;
+
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
   options.customNamespaces = {};
@@ -59,7 +62,7 @@ Player.prototype.setupCallbacks_ = function() {
     let method = message[0];
     switch (method) {
       case 'requestAd':
-        let adTag = message[1]; 
+        let adTag = message[1];
         let currentTime = parseFloat(message[2]);
         self.requestAd_(adTag, currentTime);
         break;
@@ -82,7 +85,7 @@ Player.prototype.setupCallbacks_ = function() {
           self.initIMA_();
         }
         this.request_ = request;
-//         this.playerManager_.pause();
+        this.playerManager_.pause();
         return request;
       });
 };
@@ -125,7 +128,6 @@ Player.prototype.initIMA_ = function() {
 Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   let adsRenderingSettings = new google.ima.AdsRenderingSettings();
   adsRenderingSettings.playAdsAfterTime = this.currentContentTime_;
-  adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
 
   // Get the ads manager.
   this.adsManager_ = adsManagerLoadedEvent.getAdsManager(
@@ -143,8 +145,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       this.onContentResumeRequested_.bind(this));
 
   try {
-    this.adsManager_.init(this.mediaElement_.width, this.mediaElement_.height,
-        google.ima.ViewMode.FULLSCREEN);
+    this.adsManager_.init(fWidth, fHeight, google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
@@ -158,8 +159,6 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
  * @private
  */
 Player.prototype.onAdError_ = function(adErrorEvent) {
-  console.log("error - " + adErrorEvent);
-  console.log("error - " + adErrorEvent.getError().toString());
   this.broadcast_('Ad Error: ' + adErrorEvent.getError().toString());
   // Handle the error logging.
   if (this.adsManager_) {
@@ -212,10 +211,10 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   }
   let adsRequest = new google.ima.AdsRequest();
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = this.mediaElement_.width;
-  adsRequest.linearAdSlotHeight = this.mediaElement_.height;
-  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.width;
-  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.height / 3;
+  adsRequest.linearAdSlotWidth = fWidth;
+  adsRequest.linearAdSlotHeight = fHeight;
+  adsRequest.nonLinearAdSlotWidth = fWidth;
+  adsRequest.nonLinearAdSlotHeight = fHeight / 3;
   this.adsLoader_.requestAds(adsRequest);
 };
 
