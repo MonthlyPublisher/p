@@ -27,8 +27,8 @@ let Player = function() {
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
-  this.fWidth = 0;
-  this.fHeight = 0;
+  this.fWidth = document.getElementById("adContainer").offsetWidth;
+  this.fHeight = document.getElementById("adContainer").offsetHeight;
 
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
@@ -82,8 +82,8 @@ Player.prototype.setupCallbacks_ = function() {
       cast.framework.messages.MessageType.LOAD,
       (request) => {
         if (!this.fWidth || !this.fHeight) {
-          this.fWidth = window.screen.width;
-          this.fHeight = window.screen.height;
+          this.fWidth = document.getElementById("adContainer").offsetWidth;
+          this.fHeight = document.getElementById("adContainer").offsetHeight;
         }
 
         if (!this.request_) {
@@ -151,9 +151,9 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
   try {
     if (!this.fWidth || !this.fHeight) {
-      this.fWidth = window.screen.width;
-      this.fHeight = window.screen.height;
-    }
+      this.fWidth = document.getElementById("adContainer").offsetWidth;
+      this.fHeight = document.getElementById("adContainer").offsetHeight;
+}
 
     this.adsManager_.init(this.fWidth, this.fHeight, google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
@@ -221,9 +221,9 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   }
   let adsRequest = new google.ima.AdsRequest();
   if (!this.fWidth || !this.fHeight) {
-    this.fWidth = window.screen.width;
-    this.fHeight = window.screen.height;
-  }
+    this.fWidth = document.getElementById("adContainer").offsetWidth;
+    this.fHeight = document.getElementById("adContainer").offsetHeight;
+}
   adsRequest.adTagUrl = adTag;
   adsRequest.linearAdSlotWidth = this.fWidth;
   adsRequest.linearAdSlotHeight = this.fHeight;
@@ -242,4 +242,3 @@ Player.prototype.seek_ = function(time) {
   this.playerManager_.seek(time);
   this.playerManager_.play();
 };
-
