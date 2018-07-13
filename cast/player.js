@@ -149,6 +149,25 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
       this.onContentResumeRequested_.bind(this));
 
+    var events = [google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+                google.ima.AdEvent.Type.CLICK,
+                google.ima.AdEvent.Type.COMPLETE,
+                google.ima.AdEvent.Type.FIRST_QUARTILE,
+                google.ima.AdEvent.Type.LOADED,
+                google.ima.AdEvent.Type.MIDPOINT,
+                google.ima.AdEvent.Type.PAUSED,
+                google.ima.AdEvent.Type.STARTED,
+                google.ima.AdEvent.Type.THIRD_QUARTILE];
+  for (var index in events) {
+    this.adsManager_.addEventListener(
+        events[index],
+        this.onAdEvent_,
+        false,
+        (adEvent) => {
+          console.log(adEvent);
+        });
+  }
+
   try {
     if (!this.fWidth || !this.fHeight) {
       this.fWidth = document.getElementById("adContainer").offsetWidth;
