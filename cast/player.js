@@ -27,8 +27,8 @@ let Player = function() {
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
-  const fWidth = window.screen.width;
-  const fHeight = window.screen.height;
+  const fWidth;
+  const fHeight;
 
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
@@ -81,6 +81,11 @@ Player.prototype.setupCallbacks_ = function() {
   this.playerManager_.setMessageInterceptor(
       cast.framework.messages.MessageType.LOAD,
       (request) => {
+        if (!this.fWidth || !this.fHeight) {
+          this.fWidth = window.screen.width;
+          this.fHeight = window.screen.height;
+        }
+
         if (!this.request_) {
           self.initIMA_();
         }
@@ -145,7 +150,12 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       this.onContentResumeRequested_.bind(this));
 
   try {
-    this.adsManager_.init(fWidth, fHeight, google.ima.ViewMode.FULLSCREEN);
+    if (!this.fWidth || !this.fHeight) {
+      this.fWidth = window.screen.width;
+      this.fHeight = window.screen.height;
+    }
+
+    this.adsManager_.init(this.fWidth, this.fHeight, google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
@@ -210,11 +220,15 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
     this.currentContentTime_ = currentTime;
   }
   let adsRequest = new google.ima.AdsRequest();
+  if (!this.fWidth || !this.fHeight) {
+    this.fWidth = window.screen.width;
+    this.fHeight = window.screen.height;
+  }
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = fWidth;
-  adsRequest.linearAdSlotHeight = fHeight;
-  adsRequest.nonLinearAdSlotWidth = fWidth;
-  adsRequest.nonLinearAdSlotHeight = fHeight / 3;
+  adsRequest.linearAdSlotWidth = this.fWidth;
+  adsRequest.linearAdSlotHeight = this.fHeight;
+  adsRequest.nonLinearAdSlotWidth = this.fWidth;
+  adsRequest.nonLinearAdSlotHeight = this.fHeight / 3;
   this.adsLoader_.requestAds(adsRequest);
 };
 
@@ -228,3 +242,4 @@ Player.prototype.seek_ = function(time) {
   this.playerManager_.seek(time);
   this.playerManager_.play();
 };
+
