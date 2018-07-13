@@ -172,6 +172,8 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
  * @private
  */
 Player.prototype.onAdError_ = function(adErrorEvent) {
+  console.log("onAdError_");
+  console.log(adErrorEvent);
   this.broadcast_('Ad Error: ' + adErrorEvent.getError().toString());
   // Handle the error logging.
   if (this.adsManager_) {
@@ -186,7 +188,9 @@ Player.prototype.onAdError_ = function(adErrorEvent) {
  * When content is paused by AdsManager to start playing an ad.
  * @private
  */
-Player.prototype.onContentPauseRequested_ = function() {
+Player.prototype.onContentPauseRequested_ = function(e) {
+  console.log("onContentPauseRequested_");
+  console.log(e);
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 };
@@ -195,7 +199,9 @@ Player.prototype.onContentPauseRequested_ = function() {
  * When an ad finishes playing and AdsManager resumes content.
  * @private
  */
-Player.prototype.onContentResumeRequested_ = function() {
+Player.prototype.onContentResumeRequested_ = function(e) {
+  console.log("onContentResumeRequested_");
+  console.log(e);
   this.broadcast_('onContentResumeRequested');
 
   this.playerManager_.load(this.request_);
@@ -206,7 +212,9 @@ Player.prototype.onContentResumeRequested_ = function() {
  * Destroys AdsManager when all requested ads have finished playing.
  * @private
  */
-Player.prototype.onAllAdsCompleted_ = function() {
+Player.prototype.onAllAdsCompleted_ = function(e) {
+  console.log("onAllAdsCompleted_");
+  console.log(e);
   if (this.adsManager_) {
     this.adsManager_.destroy();
   }
