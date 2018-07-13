@@ -155,7 +155,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       this.fHeight = document.getElementById("adContainer").offsetHeight;
 }
 
-    this.adsManager_.init(this.fWidth, this.fHeight, google.ima.ViewMode.FULLSCREEN);
+    this.adsManager_.init(300, 150, google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
@@ -225,10 +225,10 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
     this.fHeight = document.getElementById("adContainer").offsetHeight;
 }
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = this.fWidth;
-  adsRequest.linearAdSlotHeight = this.fHeight;
-  adsRequest.nonLinearAdSlotWidth = this.fWidth;
-  adsRequest.nonLinearAdSlotHeight = this.fHeight / 3;
+  adsRequest.linearAdSlotWidth = 300;
+  adsRequest.linearAdSlotHeight = 150;
+  adsRequest.nonLinearAdSlotWidth = 300;
+  adsRequest.nonLinearAdSlotHeight = 150;
   this.adsLoader_.requestAds(adsRequest);
 };
 
