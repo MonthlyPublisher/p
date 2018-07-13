@@ -90,7 +90,6 @@ Player.prototype.setupCallbacks_ = function() {
           self.initIMA_();
         }
         this.request_ = request;
-        this.playerManager_.pause();
         return request;
       });
 };
