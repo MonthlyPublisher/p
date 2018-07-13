@@ -27,8 +27,8 @@ let Player = function() {
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
-  const fWidth;
-  const fHeight;
+  this.fWidth = 0;
+  this.fHeight = 0;
 
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
