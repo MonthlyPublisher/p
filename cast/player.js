@@ -158,7 +158,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
 
   try {
-    this.adsManager_.init(this.mediaElement_.width, this.mediaElement_.height,
+    this.adsManager_.init(600, 300,
         google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
@@ -194,6 +194,8 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   console.log(e);
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
+  
+  this.playerManager_.stop();
 };
 
 /**
