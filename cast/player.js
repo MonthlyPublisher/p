@@ -158,7 +158,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
 
   try {
-    this.adsManager_.init(600, 300,
+    this.adsManager_.init(this.mediaElement_.offsetWidth, this.mediaElement_.offsetHeight,
         google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
@@ -235,10 +235,10 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   }
   let adsRequest = new google.ima.AdsRequest();
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = this.mediaElement_.width;
-  adsRequest.linearAdSlotHeight = this.mediaElement_.height;
-  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.width;
-  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.height / 3;
+  adsRequest.linearAdSlotWidth = this.mediaElement_.offsetWidth;
+  adsRequest.linearAdSlotHeight = this.mediaElement_.offsetHeight;
+  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.offsetWidth;
+  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.offsetHeight;
   this.adsLoader_.requestAds(adsRequest);
 };
 
