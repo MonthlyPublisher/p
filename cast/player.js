@@ -82,7 +82,7 @@ Player.prototype.setupCallbacks_ = function() {
           self.initIMA_();
         }
         this.request_ = request;
-//         this.playerManager_.pause();
+        this.playerManager_.pause();
         return request;
       });
 };
@@ -102,7 +102,8 @@ Player.prototype.broadcast_ = function(message) {
  */
 Player.prototype.initIMA_ = function() {
   this.currentContentTime_ = -1;
-  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
+  let adDisplayContainer = new google.ima.AdDisplayContainer(
+      document.getElementById('adContainer'), this.mediaElement_);
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
   this.adsLoader_.getSettings().setPlayerType('cast/client-side');
@@ -124,7 +125,6 @@ Player.prototype.initIMA_ = function() {
 Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   let adsRenderingSettings = new google.ima.AdsRenderingSettings();
   adsRenderingSettings.playAdsAfterTime = this.currentContentTime_;
-  adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
 
   // Get the ads manager.
   this.adsManager_ = adsManagerLoadedEvent.getAdsManager(
@@ -157,7 +157,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
 
   try {
-    this.adsManager_.init(this.mediaElement_.offsetWidth / 2, this.mediaElement_.offsetHeight / 2,
+    this.adsManager_.init(this.mediaElement_.offsetWidth, this.mediaElement_.offsetHeight,
         google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
@@ -193,8 +193,6 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   console.log(e);
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
-  
-  this.playerManager_.pause();
 };
 
 /**
@@ -206,7 +204,8 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   console.log(e);
   this.broadcast_('onContentResumeRequested');
 
-  this.playerManager_.play();
+  this.playerManager_.load(this.request_);
+  this.seek_(this.currentContentTime_);
 };
 
 /**
