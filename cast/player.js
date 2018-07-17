@@ -157,7 +157,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
 
   try {
-    this.adsManager_.init(this.mediaElement_.offsetWidth, this.mediaElement_.offsetHeight,
+    this.adsManager_.init(this.mediaElement_.offsetWidth / 2, this.mediaElement_.offsetHeight / 2,
         google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
