@@ -102,8 +102,7 @@ Player.prototype.broadcast_ = function(message) {
  */
 Player.prototype.initIMA_ = function() {
   this.currentContentTime_ = -1;
-  let adDisplayContainer = new google.ima.AdDisplayContainer(
-      document.getElementById('adContainer'), this.mediaElement_);
+  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
   this.adsLoader_.getSettings().setPlayerType('cast/client-side');
@@ -195,7 +194,7 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
   
-  this.playerManager_.stop();
+  this.playerManager_.pause();
 };
 
 /**
@@ -207,8 +206,7 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   console.log(e);
   this.broadcast_('onContentResumeRequested');
 
-  this.playerManager_.load(this.request_);
-  this.seek_(this.currentContentTime_);
+  this.playerManager_.play();
 };
 
 /**
