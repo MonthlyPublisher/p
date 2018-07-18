@@ -117,16 +117,7 @@ Player.prototype.setupCallbacks_ = function() {
         if (!this.request_) {
           self.initIMA_();
         }
-        this.request_ = request;
-        // this.playerManager_.pause();
-
-        if (request.customData["rmcKey"]) {
-          request.media.contentId += "?" +request.customData.rmcKeyParamName+ "=" + request.customData["rmcKey"]; 
-        }
-        if (request.customData.adTags) {
-          // self.requestAd_(request.customData.adTags, 0);
-        }
-        
+        this.request_ = request;        
         return request;
       });
 
