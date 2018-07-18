@@ -126,6 +126,13 @@ Player.prototype.setupCallbacks_ = function() {
 
         return request;
       });
+
+  this.playerManager_.addEventListener(
+        cast.framework.events.EventType.MEDIA_STATUS, (event) => {
+          console.log("MEDIA_STATUS - " + event.playerState + ", " + event.idleReason);
+          console.log(event);
+    });
+      
 };
 
 /**
