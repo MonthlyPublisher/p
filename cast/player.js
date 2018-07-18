@@ -176,7 +176,8 @@ Player.prototype.initIMA_ = function() {
  */
 Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   let adsRenderingSettings = new google.ima.AdsRenderingSettings();
-  adsRenderingSettings.playAdsAfterTime = this.currentContentTime_;
+  adsRenderingSettings.playAdsAfterTime = 0;
+  adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
 
   // Get the ads manager.
   this.adsManager_ = adsManagerLoadedEvent.getAdsManager(
