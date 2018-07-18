@@ -38,7 +38,7 @@ let Player = function() {
     console.log("onManifestRequestHandler");
     console.log(requestInfo);
     if (this.request_ && this.request_.customData["rmcKey"] && (requestInfo.url.endsWith(".m3u8") || requestInfo.url.endsWith(".ts"))) {
-      requestInfo.url += "?__gda__=" + this.request_.customData["rmcKey"]; 
+      requestInfo.url += "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; 
     }
   };
 
@@ -47,7 +47,7 @@ let Player = function() {
     console.log(requestData);
 
     if (this.request_ && this.request_.customData["rmcKey"] && (requestData.media.contentId.endsWith(".m3u8") || requestData.media.contentId.endsWith(".ts"))) {
-      return requestData.media.contentId + "?__gda__=" + this.request_.customData["rmcKey"]; 
+      return requestData.media.contentId + "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; 
     }
 
     return requestData.media.contentId;
@@ -121,9 +121,12 @@ Player.prototype.setupCallbacks_ = function() {
         // this.playerManager_.pause();
 
         if (request.customData["rmcKey"]) {
-          request.media.contentId += "?__gda__=" + request.customData["rmcKey"];
+          request.media.contentId += "?" +request.customData.rmcKeyParamName+ "=" + request.customData["rmcKey"]; 
         }
-
+        if (request.customData.adTags) {
+          self.requestAd_(adTag, 0);
+        }
+        
         return request;
       });
 
