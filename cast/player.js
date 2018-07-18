@@ -30,7 +30,7 @@ let Player = function() {
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
     if (this.request_ && this.request_.customData["rmcKey"] && (networkRequestInfo.url.endsWith(".m3u8") || networkRequestInfo.url.endsWith(".ts"))) {
-      networkRequestInfo.url += "?__gda__=" + this.request_.customData["rmcKey"]; 
+      networkRequestInfo.url += "?" +this.request_.customData.rmcKeyParamName + "=" + this.request_.customData["rmcKey"]; 
     }
   };
   
@@ -124,7 +124,7 @@ Player.prototype.setupCallbacks_ = function() {
           request.media.contentId += "?" +request.customData.rmcKeyParamName+ "=" + request.customData["rmcKey"]; 
         }
         if (request.customData.adTags) {
-          self.requestAd_(adTag, 0);
+          self.requestAd_(request.customData.adTags, 0);
         }
         
         return request;
@@ -157,7 +157,7 @@ Player.prototype.initIMA_ = function() {
       document.getElementById('adContainer'), this.mediaElement_);
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
-  this.adsLoader_.getSettings().setPlayerType('cast/client-side');
+  this.adsLoader_.getSettings().setPlayerType('cast/line-tv');
   this.adsLoader_.addEventListener(
       google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
       this.onAdsManagerLoaded_.bind(this), false);
