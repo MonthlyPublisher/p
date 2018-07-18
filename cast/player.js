@@ -33,15 +33,20 @@ let Player = function() {
       networkRequestInfo.url += "?__gda__=" + this.request_.customData["rmcKey"]; 
     }
   };
+  
   playbackConfig.manifestRequestHandler = requestInfo => {
     console.log("onManifestRequestHandler");
     console.log(requestInfo);
+    if (this.request_ && this.request_.customData["rmcKey"] && (requestInfo.url.endsWith(".m3u8") || requestInfo.url.endsWith(".ts"))) {
+      requestInfo.url += "?__gda__=" + this.request_.customData["rmcKey"]; 
+    }
   };
+
   this.playerManager_.setMediaUrlResolver((requestData) => {
     console.log("onMediaUrlResolver");
     console.log(requestData);
 
-    if (this.request_ && this.request_.customData["rmcKey"] && (networkRequestInfo.media.contentId.endsWith(".m3u8") || networkRequestInfo.media.contentId.endsWith(".ts"))) {
+    if (this.request_ && this.request_.customData["rmcKey"] && (requestData.media.contentId.endsWith(".m3u8") || requestData.media.contentId.endsWith(".ts"))) {
       return requestData.media.contentId + "?__gda__=" + this.request_.customData["rmcKey"]; 
     }
 
@@ -58,7 +63,6 @@ let Player = function() {
 
   
   this.playerManager_.setPlaybackConfig(playbackConfig);
-
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
   options.customNamespaces = {};
@@ -114,7 +118,7 @@ Player.prototype.setupCallbacks_ = function() {
           self.initIMA_();
         }
         this.request_ = request;
-        this.playerManager_.pause();
+        // this.playerManager_.pause();
 
         if (request.customData["rmcKey"]) {
           request.media.contentId += "?__gda__=" + request.customData["rmcKey"];
