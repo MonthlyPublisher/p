@@ -124,7 +124,7 @@ Player.prototype.setupCallbacks_ = function() {
           request.media.contentId += "?" +request.customData.rmcKeyParamName+ "=" + request.customData["rmcKey"]; 
         }
         if (request.customData.adTags) {
-          self.requestAd_(request.customData.adTags, 0);
+          // self.requestAd_(request.customData.adTags, 0);
         }
         
         return request;
@@ -208,7 +208,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
 
   try {
-    this.adsManager_.init(this.mediaElement_.offsetWidth, this.mediaElement_.offsetHeight,
+    this.adsManager_.init(1280, 720,
         google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
@@ -283,10 +283,10 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   }
   let adsRequest = new google.ima.AdsRequest();
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = this.mediaElement_.offsetWidth;
-  adsRequest.linearAdSlotHeight = this.mediaElement_.offsetHeight;
-  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.offsetWidth;
-  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.offsetHeight;
+  adsRequest.linearAdSlotWidth = 1280;
+  adsRequest.linearAdSlotHeight = 720;
+  adsRequest.nonLinearAdSlotWidth = 1280;
+  adsRequest.nonLinearAdSlotHeight = 720;
   this.adsLoader_.requestAds(adsRequest);
 };
 
