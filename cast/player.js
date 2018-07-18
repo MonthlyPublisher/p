@@ -36,19 +36,19 @@ let Player = function() {
   playbackConfig.manifestRequestHandler = requestInfo => {
     console.log(requestInfo);
   };
-  playerManaber.setMediaUrlResolver((requestData) => {
+  this.playerManaber.setMediaUrlResolver((requestData) => {
     console.log("onMediaUrlResolver");
     console.log(requestData);
   }); 
 
-  playerManaber.setMediaPlaybackInfoHandler((requestData, config) => {
+  this.playerManaber.setMediaPlaybackInfoHandler((requestData, config) => {
     console.log("onMediaPlaybackInfoHandler");
     console.log(requestData);
     console.log(config);
   }); 
 
   
-  playerManaber.setPlaybackConfig(playbackConfig);
+  this.playerManaber.setPlaybackConfig(playbackConfig);
 
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
