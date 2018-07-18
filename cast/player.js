@@ -133,6 +133,19 @@ Player.prototype.setupCallbacks_ = function() {
             }    
           }
     });
+
+  this.playerManager_.addEventListener(
+      cast.framework.events.EventType.PLAYER_LOAD_COMPLETE, () => {
+        console.log("PLAYER_LOAD_COMPLETE");
+        const textTracksManager = playerManager.getTextTracksManager();
+    
+        // Get all text tracks
+        const tracks = textTracksManager.getTracks();
+    
+        // Choose the first text track to be active by its ID
+        textTracksManager.setActiveByIds([tracks[0].trackId]);
+      });
+    
       
 };
 
