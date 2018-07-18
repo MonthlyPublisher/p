@@ -27,6 +27,29 @@ let Player = function() {
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
+  var playbackConfig = new cast.framework.PlaybackConfig();
+  playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
+    if (this.request_ && this.request_.customData["rmcKey"] && (networkRequestInfo.url.endsWith(".m3u8") || networkRequestInfo.url.endsWith(".ts"))) {
+      networkRequestInfo.url += "?__gda__=" + this.request_.customData["rmcKey"]; 
+    }
+  };
+  playbackConfig.manifestRequestHandler = requestInfo => {
+    console.log(requestInfo);
+  };
+  playerManaber.setMediaUrlResolver((requestData) => {
+    console.log("onMediaUrlResolver");
+    console.log(requestData);
+  }); 
+
+  playerManaber.setMediaPlaybackInfoHandler((requestData, config) => {
+    console.log("onMediaPlaybackInfoHandler");
+    console.log(requestData);
+    console.log(config);
+  }); 
+
+  
+  playerManaber.setPlaybackConfig(playbackConfig);
+
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
   options.customNamespaces = {};
@@ -83,6 +106,11 @@ Player.prototype.setupCallbacks_ = function() {
         }
         this.request_ = request;
         this.playerManager_.pause();
+
+        if (request.customData["rmcKey"]) {
+          request.media.contentId += "?__gda__=" + request.customData["rmcKey"];
+        }
+
         return request;
       });
 };
