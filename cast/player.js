@@ -132,8 +132,15 @@ Player.prototype.setupCallbacks_ = function() {
 
   this.playerManager_.addEventListener(
         cast.framework.events.EventType.MEDIA_STATUS, (event) => {
-          console.log("MEDIA_STATUS - " + event.playerState + ", " + event.idleReason);
+          console.log("MEDIA_STATUS - " + event.mediaStatus.playerState + ", " + event.mediaStatus.idleReason);
           console.log(event);
+
+          if (!this.adRequested && event.mediaStatus.playerState == "PAUSED") {
+            this.adRequested = true;
+            if (this.request_.customData.adTags) {
+              self.requestAd_(this.request_.customData.adTags, 0);
+            }    
+          }
     });
       
 };
