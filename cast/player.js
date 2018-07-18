@@ -137,7 +137,7 @@ Player.prototype.setupCallbacks_ = function() {
   this.playerManager_.addEventListener(
       cast.framework.events.EventType.PLAYER_LOAD_COMPLETE, () => {
         console.log("PLAYER_LOAD_COMPLETE");
-        const textTracksManager = playerManager.getTextTracksManager();
+        const textTracksManager = this.playerManager_.getTextTracksManager();
     
         // Get all text tracks
         const tracks = textTracksManager.getTracks();
