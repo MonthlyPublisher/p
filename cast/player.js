@@ -34,17 +34,26 @@ let Player = function() {
     }
   };
   playbackConfig.manifestRequestHandler = requestInfo => {
+    console.log("onManifestRequestHandler");
     console.log(requestInfo);
   };
   this.playerManager_.setMediaUrlResolver((requestData) => {
     console.log("onMediaUrlResolver");
     console.log(requestData);
+
+    if (this.request_ && this.request_.customData["rmcKey"] && (networkRequestInfo.media.contentId.endsWith(".m3u8") || networkRequestInfo.media.contentId.endsWith(".ts"))) {
+      return requestData.media.contentId + "?__gda__=" + this.request_.customData["rmcKey"]; 
+    }
+
+    return requestData.media.contentId;
   }); 
 
   this.playerManager_.setMediaPlaybackInfoHandler((requestData, config) => {
     console.log("onMediaPlaybackInfoHandler");
     console.log(requestData);
     console.log(config);
+
+    return config;
   }); 
 
   
