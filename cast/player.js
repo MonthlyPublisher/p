@@ -231,8 +231,9 @@ Player.prototype.onAdError_ = function(adErrorEvent) {
     this.adsManager_.destroy();
   }
   // Play content.
-  this.playerManager_.load(this.request_);
-  this.playerManager_.seek(this.currentContentTime_);
+  //   this.playerManager_.load(this.request_);
+  //   this.playerManager_.seek(this.currentContentTime_);
+  this.playerManager_.play();
 };
 
 /**
