@@ -31,7 +31,7 @@ let Player = function() {
 
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
-    if (this.request_ && this.request_.customData["rmcKey"] && (networkRequestInfo.url.endsWith(".m3u8") || networkRequestInfo.url.endsWith(".ts"))) {
+    if (this.request_ && this.request_.customData["rmcKey"] && networkRequestInfo.url.endsWith(".ts"))) {
       networkRequestInfo.url += "?" +this.request_.customData.rmcKeyParamName + "=" + this.request_.customData["rmcKey"]; 
     }
   };
@@ -39,7 +39,7 @@ let Player = function() {
   playbackConfig.manifestRequestHandler = requestInfo => {
     console.log("onManifestRequestHandler");
     // console.log(requestInfo);
-    if (this.request_ && this.request_.customData["rmcKey"] && (requestInfo.url.endsWith(".m3u8") || requestInfo.url.endsWith(".ts"))) {
+    if (this.request_ && this.request_.customData["rmcKey"] && (requestInfo.url.endsWith(".m3u8"))) {
       requestInfo.url += "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; 
     }
   };
@@ -291,6 +291,10 @@ Player.prototype.onAllAdsCompleted_ = function(e) {
 Player.prototype.requestAd_ = function(adTag, currentTime) {
   if (currentTime != 0) {
     this.currentContentTime_ = currentTime;
+  }
+  if (this.adsManager_) {
+    this.adsManager_.destroy();
+    this.adsManager_ = null;
   }
   let adsRequest = new google.ima.AdsRequest();
   adsRequest.adTagUrl = adTag;
