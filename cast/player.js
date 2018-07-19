@@ -24,6 +24,8 @@ const NAMESPACE = 'urn:x-cast:com.google.ads.ima.cast';
  */
 let Player = function() {
   this.context_ = cast.framework.CastReceiverContext.getInstance();
+  this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
+
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
@@ -43,12 +45,12 @@ let Player = function() {
   };
 
   this.playerManager_.setMediaUrlResolver((requestData) => {
-    console.log("onMediaUrlResolver");
-    console.log(requestData);
+    console.log("onMediaUrlResolver - " + requestData.media.contentId);
+    // console.log(requestData);
 
-    if (this.request_ && this.request_.customData["rmcKey"] && (requestData.media.contentId.endsWith(".m3u8") || requestData.media.contentId.endsWith(".ts"))) {
-      return requestData.media.contentId + "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; 
-    }
+    // if (this.request_ && this.request_.customData["rmcKey"] && (requestData.media.contentId.endsWith(".m3u8") || requestData.media.contentId.endsWith(".ts"))) {
+    //   return requestData.media.contentId + "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; 
+    // }
 
     return requestData.media.contentId;
   }); 
