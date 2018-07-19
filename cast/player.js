@@ -38,7 +38,7 @@ let Player = function() {
   
   playbackConfig.manifestRequestHandler = requestInfo => {
     console.log("onManifestRequestHandler");
-    console.log(requestInfo);
+    // console.log(requestInfo);
     if (this.request_ && this.request_.customData["rmcKey"] && (requestInfo.url.endsWith(".m3u8") || requestInfo.url.endsWith(".ts"))) {
       requestInfo.url += "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; 
     }
@@ -57,8 +57,8 @@ let Player = function() {
 
   this.playerManager_.setMediaPlaybackInfoHandler((requestData, config) => {
     console.log("onMediaPlaybackInfoHandler");
-    console.log(requestData);
-    console.log(config);
+    // console.log(requestData);
+    // console.log(config);
 
     return config;
   }); 
@@ -158,7 +158,7 @@ Player.prototype.broadcast_ = function(message) {
  * @private
  */
 Player.prototype.initIMA_ = function() {
-  google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
+  // google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
   this.currentContentTime_ = -1;
   let adDisplayContainer = new google.ima.AdDisplayContainer(
       document.getElementById('adContainer'), this.mediaElement_);
@@ -182,7 +182,8 @@ Player.prototype.initIMA_ = function() {
  */
 Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   let adsRenderingSettings = new google.ima.AdsRenderingSettings();
-  adsRenderingSettings.playAdsAfterTime = 0;
+  adsRenderingSettings.playAdsAfterTime = 5;
+  adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
   adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
 
   // Get the ads manager.
@@ -208,19 +209,20 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
     google.ima.AdEvent.Type.MIDPOINT,
     google.ima.AdEvent.Type.PAUSED,
     google.ima.AdEvent.Type.STARTED,
-    google.ima.AdEvent.Type.THIRD_QUARTILE];
+    google.ima.AdEvent.Type.THIRD_QUARTILE,
+    google.ima.AdEvent.Type.LOG];
   
   for (var index in events) {
-    this.adsManager_.addEventListener(events[index], (e) => {console.log(e)}, false, this);
+    this.adsManager_.addEventListener(events[index], (e) => {console.log("ads - "); console.log(e)}, false, this);
   }
 
 
   try {
-    this.adsManager_.init(1280, 720,
-        google.ima.ViewMode.FULLSCREEN);
+    this.adsManager_.init(1280, 720, google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
+    console.log("ads - onAdError - onAdsManagerLoaded_");
     this.broadcast_('Ads Manager Error: ' + adError.getMessage());
   }
 };
@@ -231,7 +233,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
  * @private
  */
 Player.prototype.onAdError_ = function(adErrorEvent) {
-  console.log("onAdError_");
+  console.log("ads - onAdError - " +  + adErrorEvent.getError().toString());
   console.log(adErrorEvent);
   this.broadcast_('Ad Error: ' + adErrorEvent.getError().toString());
   // Handle the error logging.
@@ -249,7 +251,7 @@ Player.prototype.onAdError_ = function(adErrorEvent) {
  * @private
  */
 Player.prototype.onContentPauseRequested_ = function(e) {
-  console.log("onContentPauseRequested_");
+  console.log("ads - onContentPauseRequested_");
   console.log(e);
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
@@ -260,11 +262,11 @@ Player.prototype.onContentPauseRequested_ = function(e) {
  * @private
  */
 Player.prototype.onContentResumeRequested_ = function(e) {
-  console.log("onContentResumeRequested_");
+  console.log("ads - onContentResumeRequested_");
   console.log(e);
   this.broadcast_('onContentResumeRequested');
 
-  this.playerManager_.resume();
+  this.playerManager_.play();
   // this.seek_(this.currentContentTime_);
 };
 
@@ -273,7 +275,7 @@ Player.prototype.onContentResumeRequested_ = function(e) {
  * @private
  */
 Player.prototype.onAllAdsCompleted_ = function(e) {
-  console.log("onAllAdsCompleted_");
+  console.log("ads - onAllAdsCompleted_");
   console.log(e);
   if (this.adsManager_) {
     this.adsManager_.destroy();
