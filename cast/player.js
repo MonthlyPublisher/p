@@ -31,7 +31,7 @@ let Player = function() {
 
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
-    if (this.request_ && this.request_.customData["rmcKey"] && networkRequestInfo.url.endsWith(".ts"))) {
+    if (this.request_ && this.request_.customData["rmcKey"] && networkRequestInfo.url.endsWith(".ts")) {
       networkRequestInfo.url += "?" +this.request_.customData.rmcKeyParamName + "=" + this.request_.customData["rmcKey"]; 
     }
   };
