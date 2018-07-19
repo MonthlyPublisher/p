@@ -127,25 +127,18 @@ Player.prototype.setupCallbacks_ = function() {
         cast.framework.events.EventType.MEDIA_STATUS, (event) => {
           console.log("MEDIA_STATUS - " + event.mediaStatus.playerState + ", " + event.mediaStatus.idleReason);
           console.log(event);
-
-          if (!this.adRequested && event.mediaStatus.playerState == "PAUSED") {
-            this.adRequested = true;
-            if (this.request_.customData.adTags) {
-              self.requestAd_(this.request_.customData.adTags, 0);
-            }    
-          }
     });
 
   this.playerManager_.addEventListener(
       cast.framework.events.EventType.PLAYER_LOAD_COMPLETE, () => {
         console.log("PLAYER_LOAD_COMPLETE");
-        const textTracksManager = this.playerManager_.getTextTracksManager();
-    
-        // Get all text tracks
-        const tracks = textTracksManager.getTracks();
-    
-        // Choose the first text track to be active by its ID
-        textTracksManager.setActiveByIds([tracks[0].trackId]);
+
+        if (!this.adRequested) {
+          this.adRequested = true;
+          if (this.request_.customData.adTags) {
+            self.requestAd_(this.request_.customData.adTags, 0);
+          }    
+        }
       });
     
       
@@ -271,8 +264,8 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   console.log(e);
   this.broadcast_('onContentResumeRequested');
 
-  this.playerManager_.load(this.request_);
-  this.seek_(this.currentContentTime_);
+  this.playerManager_.resume();
+  // this.seek_(this.currentContentTime_);
 };
 
 /**
