@@ -24,7 +24,7 @@ const NAMESPACE = 'urn:x-cast:com.google.ads.ima.cast';
  */
 let Player = function() {
   this.context_ = cast.framework.CastReceiverContext.getInstance();
-  //this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
+  // this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
 
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
@@ -179,9 +179,9 @@ Player.prototype.initIMA_ = function() {
  */
 Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   let adsRenderingSettings = new google.ima.AdsRenderingSettings();
-  adsRenderingSettings.playAdsAfterTime = 5;
-  adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
-  adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
+  adsRenderingSettings.playAdsAfterTime = this.currentContentTime_;
+  // adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
+  // adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
 
   // Get the ads manager.
   this.adsManager_ = adsManagerLoadedEvent.getAdsManager(
@@ -215,7 +215,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
 
   try {
-    this.adsManager_.init(this.mediaElement_.offsetWidth, this.mediaElement_.offsetHeight, google.ima.ViewMode.FULLSCREEN);
+    this.adsManager_.init(1280, 720, google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
@@ -295,10 +295,10 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   }
   let adsRequest = new google.ima.AdsRequest();
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = this.mediaElement_.offsetWidth;
-  adsRequest.linearAdSlotHeight = this.mediaElement_.offsetHeight;
-  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.offsetWidth;
-  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.offsetHeight;
+  adsRequest.linearAdSlotWidth = 1280;
+  adsRequest.linearAdSlotHeight = 720;
+  adsRequest.nonLinearAdSlotWidth = 1280;
+  adsRequest.nonLinearAdSlotHeight = 720;
   this.adsLoader_.requestAds(adsRequest);
 };
 
