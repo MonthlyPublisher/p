@@ -157,8 +157,8 @@ Player.prototype.broadcast_ = function(message) {
 Player.prototype.initIMA_ = function() {
   // google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
   this.currentContentTime_ = -1;
-  let adDisplayContainer = new google.ima.AdDisplayContainer(
-      document.getElementById('adContainer'), this.mediaElement_);
+  // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.mediaElement_);
+  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
   this.adsLoader_.getSettings().setPlayerType('cast/line-tv');
@@ -252,6 +252,7 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   console.log(e);
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
+  this.playerManager_.pause();
 };
 
 /**
