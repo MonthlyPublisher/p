@@ -34,6 +34,8 @@ let Player = function() {
       cast.framework.system.MessageType.STRING;
   this.context_.start(options);
 
+  this.initIMA_();
+
   this.setupCallbacks_();
 };
 
