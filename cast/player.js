@@ -24,10 +24,11 @@ const NAMESPACE = 'urn:x-cast:com.google.ads.ima.cast';
  */
 let Player = function() {
   this.context_ = cast.framework.CastReceiverContext.getInstance();
-  // this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
+  this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
 
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
+  this.adsPlayer_ = document.getElementById('adPlayer');
 
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
@@ -180,7 +181,7 @@ Player.prototype.initIMA_ = function() {
 Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   let adsRenderingSettings = new google.ima.AdsRenderingSettings();
   adsRenderingSettings.playAdsAfterTime = this.currentContentTime_;
-  adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
+  adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = false;
   adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
 
   // Get the ads manager.
@@ -253,7 +254,7 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 
-  this.playerManager_.pause();
+  this.playerManager_.stop();
 };
 
 /**
