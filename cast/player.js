@@ -133,7 +133,7 @@ Player.prototype.setupCallbacks_ = function() {
       cast.framework.events.EventType.PLAYER_LOAD_COMPLETE, () => {
         console.log("PLAYER_LOAD_COMPLETE");
 
-        if (this.request_.customData.adTags) {
+        if (this.request_.customData.adTags && !this.request_.autoplay) {
           self.requestAd_(this.request_.customData.adTags, 0);
         }    
       });
@@ -157,8 +157,8 @@ Player.prototype.broadcast_ = function(message) {
 Player.prototype.initIMA_ = function() {
   // google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
   this.currentContentTime_ = -1;
-  // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.mediaElement_);
-  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
+  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.mediaElement_);
+  // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
   this.adsLoader_.getSettings().setPlayerType('cast/line-tv');
@@ -180,8 +180,8 @@ Player.prototype.initIMA_ = function() {
 Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   let adsRenderingSettings = new google.ima.AdsRenderingSettings();
   adsRenderingSettings.playAdsAfterTime = this.currentContentTime_;
-  // adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
-  // adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
+  adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
+  adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
 
   // Get the ads manager.
   this.adsManager_ = adsManagerLoadedEvent.getAdsManager(
@@ -252,6 +252,7 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   console.log(e);
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
+
   this.playerManager_.pause();
 };
 
@@ -264,8 +265,11 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   console.log(e);
   this.broadcast_('onContentResumeRequested');
 
-  this.playerManager_.play();
-  // this.seek_(this.currentContentTime_);
+  if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
+    this.request_.autoplay = true;
+    this.request_.currentTime = this.currentContentTime_;
+    this.playerManager_.load(this.request_);
+  }
 };
 
 /**
