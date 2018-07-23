@@ -1,38 +1,3 @@
-<!-- <html>
-<head>
-  <script type="text/javascript"
-      src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js">
-  </script>
-</head>
-<body>
-  <cast-media-player></cast-media-player>
-  <script>
-    const context = cast.framework.CastReceiverContext.getInstance();
-    const player = context.getPlayerManager();
-
-    player.setMessageInterceptor(
-    cast.framework.messages.MessageType.LOAD, loadRequestData => {
-      return loadRequestData;
-    });
-
-
-    player.setMessageInterceptor(
-        cast.framework.messages.MessageType.MEDIA_STATUS,
-        status => {
-          status.customData = {};
-          return status;
-        });
-
-    var playbackConfig = new cast.framework.PlaybackConfig();
-    playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
-      console.log(networkRequestInfo);
-    };
-    player.setPlaybackConfig(playbackConfig);
-    context.start();
-  </script>
-  <div>#1</div>
-</body>
-</html> -->
 <html manifest="nocache.mf">
 <head>
   <title>IMA Example receiver</title>
@@ -43,11 +8,10 @@
 </head>
 <body>
   <cast-media-player id="player"></cast-media-player>
-  <div id="adContainer">
+  <div id="adContainer">    
     <script>
       var player = new Player();
     </script>
   </div>
 </body>
 </html>
-
