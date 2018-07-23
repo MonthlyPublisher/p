@@ -28,7 +28,6 @@ let Player = function() {
 
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
-  this.adsPlayer_ = document.getElementById('adsPlayer');
 
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
@@ -49,8 +48,8 @@ let Player = function() {
     console.log("onMediaUrlResolver - " + requestData.media.contentId);
     // console.log(requestData);
 
-    // if (this.request_ && this.request_.customData["rmcKey"] && (requestData.media.contentId.endsWith(".m3u8") || requestData.media.contentId.endsWith(".ts"))) {
-    //   return requestData.media.contentId + "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; 
+    // if (this.request_ && this.request_.customData["rmcKey"] && (requestData.media.contentId.endsWith(".m3u8") || requestData.media..endsWith(".ts"))) {
+    //   return requestData.media.contentId + "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; contentId
     // }
 
     return requestData.media.contentId;
@@ -158,7 +157,7 @@ Player.prototype.broadcast_ = function(message) {
 Player.prototype.initIMA_ = function() {
   // google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
   this.currentContentTime_ = -1;
-  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.adsPlayer_);
+  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.mediaElement_);
   // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
@@ -216,7 +215,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
 
   try {
-    this.adsManager_.init(1280, 720, google.ima.ViewMode.FULLSCREEN);
+    this.adsManager_.init(1280, 720, google.ima.ViewMode.NORMAL);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
