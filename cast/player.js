@@ -139,6 +139,13 @@ Player.prototype.setupCallbacks_ = function() {
           self.requestAd_(this.request_.customData.adTags, 0);
         }    
       });
+
+  this.playerManager_.addEventListener(
+      cast.framework.events.EventType.ERROR, (event) => {
+        console.log("ERROR - " + event.detailedErrorCode);
+        console.log(event);
+  });
+
     
       
 };
