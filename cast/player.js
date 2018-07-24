@@ -28,7 +28,6 @@ let Player = function() {
 
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player');
-  this.adMediaElement_ = document.getElementById('ad_player');
 
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
@@ -167,7 +166,7 @@ Player.prototype.broadcast_ = function(message) {
 Player.prototype.initIMA_ = function() {
   // google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
   this.currentContentTime_ = -1;
-  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.adMediaElement_);
+  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.mediaElement_);
   // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
