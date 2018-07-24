@@ -177,6 +177,7 @@ Player.prototype.onContentPauseRequested_ = function() {
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 
+  this.adMediaElement_.src = this.mediaElement_.src;
   this.playerManager_.stop();
 };
 

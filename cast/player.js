@@ -285,6 +285,9 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   this.broadcast_('onContentResumeRequested');
 
   // if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
+
+    this.adMediaElement_.src = null;
+    
     this.request_.autoplay = true;
     this.request_.currentTime = this.currentContentTime_;
     this.playerManager_.load(this.request_);
