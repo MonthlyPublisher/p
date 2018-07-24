@@ -28,8 +28,7 @@ let Player = function() {
 
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player');
-
-  this.playerManager_.setMediaElement(this.mediaElement_);
+  this.adMediaElement_ = document.getElementById('ad_player');
 
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
@@ -168,7 +167,7 @@ Player.prototype.broadcast_ = function(message) {
 Player.prototype.initIMA_ = function() {
   // google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
   this.currentContentTime_ = -1;
-  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.mediaElement_);
+  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.adMediaElement_);
   // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
@@ -271,9 +270,9 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 
-  // this.playerManager_.stop();
-  document.getElementById("player").style.display = "none"; 
-  this.playerManager_.pause();
+  this.playerManager_.stop();
+  // document.getElementById("player").style.display = "none"; 
+  // this.playerManager_.pause();
 };
 
 /**
@@ -290,8 +289,8 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   //   this.request_.currentTime = this.currentContentTime_;
   //   this.playerManager_.load(this.request_);
   // }
-  this.playerManager_.play();
-  document.getElementById("player").style.display = "block"; 
+  // this.playerManager_.play();
+  // document.getElementById("player").style.display = "block"; 
 };
 
 /**
