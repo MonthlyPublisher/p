@@ -27,7 +27,7 @@ let Player = function() {
   this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
 
   this.playerManager_ = this.context_.getPlayerManager();
-  this.mediaElement_ = document.getElementById('mediaElement');
+  this.mediaElement_ = document.getElementById('player');
 
   this.playerManager_.setMediaElement(this.mediaElement_);
 
