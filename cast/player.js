@@ -27,7 +27,7 @@ let Player = function() {
   this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
 
   this.playerManager_ = this.context_.getPlayerManager();
-  this.mediaElement_ = document.getElementById('player');
+  this.mediaElement_ = document.getElementById('player').getMediaElement();
 
   var playbackConfig = new cast.framework.PlaybackConfig();
   playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
