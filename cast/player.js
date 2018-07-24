@@ -233,7 +233,7 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
  * @private
  */
 Player.prototype.onAdError_ = function(adErrorEvent) {
-  console.log("ads - onAdError - " +  + adErrorEvent.getError().toString());
+  console.log("ads - onAdError - " + adErrorEvent.getError().toString());
   console.log(adErrorEvent);
   this.broadcast_('Ad Error: ' + adErrorEvent.getError().toString());
   // Handle the error logging.
