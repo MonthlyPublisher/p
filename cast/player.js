@@ -241,10 +241,14 @@ Player.prototype.onAdError_ = function(adErrorEvent) {
     this.adsManager_.destroy();
   }
   // Play content.
-    this.request_.autoplay = true;
-    this.request_.currentTime = this.currentContentTime_;
-    this.playerManager_.load(this.request_);
+    // this.request_.autoplay = true;
+    // this.request_.currentTime = this.currentContentTime_;
+    // this.playerManager_.load(this.request_);
   // this.playerManager_.play();
+
+  player.playerManager_.play();
+  document.getElementById("player").style.display = "block"; 
+
 };
 
 /**
@@ -257,7 +261,9 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   this.currentContentTime_ = this.mediaElement_.currentTime;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 
-  this.playerManager_.stop();
+  // this.playerManager_.stop();
+  document.getElementById("player").style.display = "none"; 
+  player.playerManager_.pause();
 };
 
 /**
@@ -269,11 +275,13 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   console.log(e);
   this.broadcast_('onContentResumeRequested');
 
-  if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
-    this.request_.autoplay = true;
-    this.request_.currentTime = this.currentContentTime_;
-    this.playerManager_.load(this.request_);
-  }
+  // if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
+  //   this.request_.autoplay = true;
+  //   this.request_.currentTime = this.currentContentTime_;
+  //   this.playerManager_.load(this.request_);
+  // }
+  player.playerManager_.play();
+  document.getElementById("player").style.display = "block"; 
 };
 
 /**
