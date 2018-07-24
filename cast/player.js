@@ -254,9 +254,14 @@ Player.prototype.onAdError_ = function(adErrorEvent) {
     // this.playerManager_.load(this.request_);
   // this.playerManager_.play();
 
-  player.playerManager_.play();
-  document.getElementById("player").style.display = "block"; 
+  // player.playerManager_.play();
+  // document.getElementById("player").style.display = "block"; 
 
+  this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "block";
+
+  this.request_.autoplay = true;
+  this.request_.currentTime = this.currentContentTime_;
+  this.playerManager_.load(this.request_);
 };
 
 /**
@@ -274,6 +279,8 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   this.mediaElement_.style.display = "block"; 
   this.mediaElement_.style.zIndex = 100; 
   // this.playerManager_.pause();
+
+  this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
 };
 
 /**
@@ -287,7 +294,7 @@ Player.prototype.onContentResumeRequested_ = function(e) {
 
   // if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
 
-    this.mediaElement_.style.zIndex = this.currentZIndex;
+    this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "block";
 
     this.request_.autoplay = true;
     this.request_.currentTime = this.currentContentTime_;
