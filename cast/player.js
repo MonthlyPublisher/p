@@ -164,6 +164,7 @@ Player.prototype.initIMA_ = function() {
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
   this.adsLoader_.getSettings().setPlayerType('cast/line-tv');
+  this.adsLoader_.getSettings().setNumRedirects(10);
   this.adsLoader_.addEventListener(
       google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
       this.onAdsManagerLoaded_.bind(this), false);
@@ -263,7 +264,7 @@ Player.prototype.onContentPauseRequested_ = function(e) {
 
   // this.playerManager_.stop();
   document.getElementById("player").style.display = "none"; 
-  player.playerManager_.pause();
+  this.playerManager_.pause();
 };
 
 /**
@@ -280,7 +281,7 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   //   this.request_.currentTime = this.currentContentTime_;
   //   this.playerManager_.load(this.request_);
   // }
-  player.playerManager_.play();
+  this.playerManager_.play();
   document.getElementById("player").style.display = "block"; 
 };
 
