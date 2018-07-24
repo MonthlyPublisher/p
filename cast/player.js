@@ -167,8 +167,8 @@ Player.prototype.broadcast_ = function(message) {
 Player.prototype.initIMA_ = function() {
   // google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
   this.currentContentTime_ = -1;
-  // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.adMediaElement_);
-  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
+  let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.adMediaElement_);
+  // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
   this.adsLoader_.getSettings().setPlayerType('cast/line-tv');
@@ -268,10 +268,12 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   console.log("ads - onContentPauseRequested_");
   console.log(e);
   this.currentContentTime_ = this.mediaElement_.currentTime;
+  this.currentZIndex = this.mediaElement_.style.zIndex;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 
   this.playerManager_.stop();
-  // document.getElementById("player").style.display = "none"; 
+  this.mediaElement_.style.display = "block"; 
+  this.mediaElement_.style.zIndex = 100; 
   // this.playerManager_.pause();
 };
 
@@ -286,11 +288,12 @@ Player.prototype.onContentResumeRequested_ = function(e) {
 
   // if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
 
-    this.adMediaElement_.src = null;
-    
+    this.mediaElement_.style.zIndex = this.currentZIndex;
+
     this.request_.autoplay = true;
     this.request_.currentTime = this.currentContentTime_;
     this.playerManager_.load(this.request_);
+    
   // }
   // this.playerManager_.play();
   // document.getElementById("player").style.display = "block"; 
@@ -330,6 +333,8 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   adsRequest.nonLinearAdSlotWidth = 1280;
   adsRequest.nonLinearAdSlotHeight = 720;
   this.adsLoader_.requestAds(adsRequest);
+
+  this.request_.customData.adTags = null;
 };
 
 /**
