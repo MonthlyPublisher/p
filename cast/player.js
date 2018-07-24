@@ -226,7 +226,10 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
 
   try {
     // this.adsManager_.init(1280, 720, google.ima.ViewMode.NORMAL);
-    this.adsManager_.init(1280 * 0.6, 720 * 0.6, google.ima.ViewMode.FULLSCREEN);
+    this.adsManager_.init(
+      this.mediaElement_.offsetWidth,
+      this.mediaElement_.offsetHeight,
+      google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
@@ -276,10 +279,8 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 
   this.playerManager_.stop();
+  
   this.mediaElement_.style.display = "block"; 
-  this.mediaElement_.style.zIndex = 100; 
-  // this.playerManager_.pause();
-
   this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
 };
 
@@ -334,10 +335,10 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   let adsRequest = new google.ima.AdsRequest();
   // adsRequest.adTagUrl = adTag;
   adsRequest.adTagUrl = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=";
-  adsRequest.linearAdSlotWidth = 1280;
-  adsRequest.linearAdSlotHeight = 720;
-  adsRequest.nonLinearAdSlotWidth = 1280;
-  adsRequest.nonLinearAdSlotHeight = 720;
+  adsRequest.linearAdSlotWidth = this.mediaElement_.offsetWidth;
+  adsRequest.linearAdSlotHeight = this.mediaElement_.offsetHeight;
+  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.offsetWidth;
+  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.offsetHeight;
   this.adsLoader_.requestAds(adsRequest);
 
   this.request_.customData.adTags = null;
