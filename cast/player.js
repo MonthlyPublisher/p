@@ -295,7 +295,7 @@ Player.prototype.onContentResumeRequested_ = function(e) {
 
   // if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
 
-    this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "block";
+    this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style = "";
 
     this.request_.autoplay = true;
     this.request_.currentTime = this.currentContentTime_;
