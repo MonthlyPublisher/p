@@ -125,6 +125,7 @@ Player.prototype.setupCallbacks_ = function() {
         return request;
       });
 
+      try {
   this.playerManager_.setMessageInterceptor(
         cast.framework.messages.MessageType.QUEUE_CHANGE,
         (request) => {
@@ -149,7 +150,9 @@ Player.prototype.setupCallbacks_ = function() {
       console.log(request);
       return request;
     });
-    
+  } catch (error) {
+    console.log(eee);
+  }
   this.playerManager_.addEventListener(
         cast.framework.events.EventType.MEDIA_STATUS, (event) => {
           console.log("MEDIA_STATUS - " + event.mediaStatus.playerState + ", " + event.mediaStatus.idleReason);
