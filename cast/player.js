@@ -125,6 +125,39 @@ Player.prototype.setupCallbacks_ = function() {
         return request;
       });
 
+  this.playerManager_.setMessageInterceptor(
+        cast.framework.messages.MessageType.QUEUE_CHANGE,
+        (request) => {
+          // if (!this.request_) {
+          //   self.initIMA_();
+          // }
+          this.request_ = request;        
+          return request;
+        });
+
+        this.playerManager_.setMessageInterceptor(
+          cast.framework.messages.MessageType.QUEUE_LOAD,
+          (request) => {
+            // if (!this.request_) {
+            //   self.initIMA_();
+            // }
+            // this.request_ = request;        
+            return request;
+          });
+
+          
+          this.playerManager_.setMessageInterceptor(
+            cast.framework.messages.MessageType.QUEUE_INSERT,
+            (request) => {
+              // if (!this.request_) {
+              //   self.initIMA_();
+              // }
+              // this.request_ = request;        
+              return request;
+            });
+    
+  
+
   this.playerManager_.addEventListener(
         cast.framework.events.EventType.MEDIA_STATUS, (event) => {
           console.log("MEDIA_STATUS - " + event.mediaStatus.playerState + ", " + event.mediaStatus.idleReason);
@@ -144,10 +177,7 @@ Player.prototype.setupCallbacks_ = function() {
       cast.framework.events.EventType.ERROR, (event) => {
         console.log("ERROR - " + event.detailedErrorCode);
         console.log(event);
-  });
-
-    
-      
+  }); 
 };
 
 /**
