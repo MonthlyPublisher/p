@@ -128,36 +128,28 @@ Player.prototype.setupCallbacks_ = function() {
   this.playerManager_.setMessageInterceptor(
         cast.framework.messages.MessageType.QUEUE_CHANGE,
         (request) => {
-          // if (!this.request_) {
-          //   self.initIMA_();
-          // }
-          this.request_ = request;        
+          console.log("QUEUE_CHANGE");
+          console.log(request);
           return request;
         });
 
-        this.playerManager_.setMessageInterceptor(
-          cast.framework.messages.MessageType.QUEUE_LOAD,
-          (request) => {
-            // if (!this.request_) {
-            //   self.initIMA_();
-            // }
-            // this.request_ = request;        
-            return request;
-          });
+  this.playerManager_.setMessageInterceptor(
+    cast.framework.messages.MessageType.QUEUE_LOAD,
+    (request) => {
+      console.log("QUEUE_LOAD");
+      console.log(request);
+      return request;
+    });
 
-          
-          this.playerManager_.setMessageInterceptor(
-            cast.framework.messages.MessageType.QUEUE_INSERT,
-            (request) => {
-              // if (!this.request_) {
-              //   self.initIMA_();
-              // }
-              // this.request_ = request;        
-              return request;
-            });
     
-  
-
+  this.playerManager_.setMessageInterceptor(
+    cast.framework.messages.MessageType.QUEUE_INSERT,
+    (request) => {
+      console.log("QUEUE_INSERT");
+      console.log(request);
+      return request;
+    });
+    
   this.playerManager_.addEventListener(
         cast.framework.events.EventType.MEDIA_STATUS, (event) => {
           console.log("MEDIA_STATUS - " + event.mediaStatus.playerState + ", " + event.mediaStatus.idleReason);
