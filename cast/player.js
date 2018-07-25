@@ -151,7 +151,7 @@ Player.prototype.setupCallbacks_ = function() {
       return request;
     });
   } catch (error) {
-    console.log(eee);
+    console.log(error);
   }
   this.playerManager_.addEventListener(
         cast.framework.events.EventType.MEDIA_STATUS, (event) => {
