@@ -125,34 +125,6 @@ Player.prototype.setupCallbacks_ = function() {
         return request;
       });
 
-      try {
-  this.playerManager_.setMessageInterceptor(
-        cast.framework.messages.MessageType.QUEUE_CHANGE,
-        (request) => {
-          console.log("QUEUE_CHANGE");
-          console.log(request);
-          return request;
-        });
-
-  this.playerManager_.setMessageInterceptor(
-    cast.framework.messages.MessageType.QUEUE_LOAD,
-    (request) => {
-      console.log("QUEUE_LOAD");
-      console.log(request);
-      return request;
-    });
-
-    
-  this.playerManager_.setMessageInterceptor(
-    cast.framework.messages.MessageType.QUEUE_INSERT,
-    (request) => {
-      console.log("QUEUE_INSERT");
-      console.log(request);
-      return request;
-    });
-  } catch (error) {
-    console.log(error);
-  }
   this.playerManager_.addEventListener(
         cast.framework.events.EventType.MEDIA_STATUS, (event) => {
           console.log("MEDIA_STATUS - " + event.mediaStatus.playerState + ", " + event.mediaStatus.idleReason);
@@ -285,7 +257,7 @@ Player.prototype.onAdError_ = function(adErrorEvent) {
   // player.playerManager_.play();
   // document.getElementById("player").style.display = "block"; 
 
-  this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "block";
+  this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
 
   this.request_.autoplay = true;
   this.request_.currentTime = this.currentContentTime_;
