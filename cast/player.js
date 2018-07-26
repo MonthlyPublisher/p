@@ -256,10 +256,14 @@ Player.prototype.onAdError_ = function(adErrorEvent) {
 
   // player.playerManager_.play();
   // document.getElementById("player").style.display = "block"; 
+  if (this.adsPaused_ == false) {
+    this.playerManager_.play();
+    return;
+  }
 
   this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
   document.getElementById("isAd").style.display = "none";
-  
+
   this.request_.autoplay = true;
   this.request_.currentTime = this.currentContentTime_;
   this.playerManager_.load(this.request_);
