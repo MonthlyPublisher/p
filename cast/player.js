@@ -275,10 +275,13 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   this.currentZIndex = this.mediaElement_.style.zIndex;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 
+  this.pausedQueueItem = this.playerManager_.getQueueManager().getItems();  
   this.playerManager_.stop();
   
   this.mediaElement_.style.display = "block"; 
   this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
+
+  this.adsPaused_ = true;
 };
 
 /**
@@ -291,6 +294,11 @@ Player.prototype.onContentResumeRequested_ = function(e) {
   this.broadcast_('onContentResumeRequested');
 
   // if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
+    if (this.adsPaused_ == false) {
+      this.playerManager_.play();
+      return;
+    }
+    this.adsPaused_ = false;
 
     this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style = "";
 
@@ -329,6 +337,9 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
     this.adsManager_.destroy();
     this.adsManager_ = null;
   }
+
+  this.adsPaused_ = false;
+
   let adsRequest = new google.ima.AdsRequest();
   adsRequest.adTagUrl = adTag;
   // adsRequest.adTagUrl = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=";
