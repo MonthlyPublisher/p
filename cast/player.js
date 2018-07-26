@@ -258,7 +258,8 @@ Player.prototype.onAdError_ = function(adErrorEvent) {
   // document.getElementById("player").style.display = "block"; 
 
   this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
-
+  document.getElementById("isAd").style.display = "none";
+  
   this.request_.autoplay = true;
   this.request_.currentTime = this.currentContentTime_;
   this.playerManager_.load(this.request_);
@@ -280,6 +281,8 @@ Player.prototype.onContentPauseRequested_ = function(e) {
   
   this.mediaElement_.style.display = "block"; 
   this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
+
+  document.getElementById("isAd").style.display = "block";
 
   this.adsPaused_ = true;
 };
@@ -305,6 +308,8 @@ Player.prototype.onContentResumeRequested_ = function(e) {
     this.request_.autoplay = true;
     this.request_.currentTime = this.currentContentTime_;
     this.playerManager_.load(this.request_);
+
+    document.getElementById("isAd").style.display = "none";
     
   // }
   // this.playerManager_.play();
