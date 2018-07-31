@@ -82,6 +82,11 @@ Player.prototype.setupCallbacks_ = function() {
   this.playerManager_.setMessageInterceptor(
       cast.framework.messages.MessageType.LOAD,
       (request) => {
+        if (request.customData.adTags) {
+          var vmapAdsRequest = cast.framework.messages.VastAdsRequest();
+          vmapAdsRequest.adTagUrl = request.customData.adTags;
+          request.vmapAdsRequest = vmapAdsRequest;
+        }
         this.request_ = request;        
         return request;
       });
