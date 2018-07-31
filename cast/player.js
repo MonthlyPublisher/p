@@ -24,6 +24,8 @@ const NAMESPACE = 'urn:x-cast:com.google.ads.ima.cast';
  */
 let Player = function() {
   this.context_ = cast.framework.CastReceiverContext.getInstance();
+  this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
+
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
