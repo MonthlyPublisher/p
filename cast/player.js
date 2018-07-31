@@ -85,7 +85,7 @@ Player.prototype.setupCallbacks_ = function() {
         if (request.customData.adTags) {
           var vmapAdsRequest = new cast.framework.messages.VastAdsRequest();
           vmapAdsRequest.adTagUrl = request.customData.adTags;
-          request.vmapAdsRequest = vmapAdsRequest;
+          request.media.vmapAdsRequest = vmapAdsRequest;
         }
         this.request_ = request;        
         return request;
@@ -96,15 +96,6 @@ Player.prototype.setupCallbacks_ = function() {
           console.log("MEDIA_STATUS - " + event.mediaStatus.playerState + ", " + event.mediaStatus.idleReason);
           console.log(event);
     });
-
-  this.playerManager_.addEventListener(
-      cast.framework.events.EventType.PLAYER_LOAD_COMPLETE, () => {
-        console.log("PLAYER_LOAD_COMPLETE");
-
-        if (this.request_.customData.adTags && !this.request_.autoplay) {
-          self.requestAd_(this.request_.customData.adTags, 0);
-        }    
-      });
 
   this.playerManager_.addEventListener(
       cast.framework.events.EventType.ERROR, (event) => {
