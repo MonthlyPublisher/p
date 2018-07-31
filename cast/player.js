@@ -83,7 +83,7 @@ Player.prototype.setupCallbacks_ = function() {
       cast.framework.messages.MessageType.LOAD,
       (request) => {
         if (request.customData.adTags) {
-          var vmapAdsRequest = cast.framework.messages.VastAdsRequest();
+          var vmapAdsRequest = new cast.framework.messages.VastAdsRequest();
           vmapAdsRequest.adTagUrl = request.customData.adTags;
           request.vmapAdsRequest = vmapAdsRequest;
         }
