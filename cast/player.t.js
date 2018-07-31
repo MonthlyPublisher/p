@@ -24,9 +24,47 @@ const NAMESPACE = 'urn:x-cast:com.google.ads.ima.cast';
  */
 let Player = function() {
   this.context_ = cast.framework.CastReceiverContext.getInstance();
+  this.context_.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
+
   this.playerManager_ = this.context_.getPlayerManager();
   this.mediaElement_ = document.getElementById('player').getMediaElement();
 
+  var playbackConfig = new cast.framework.PlaybackConfig();
+  playbackConfig.segmentRequestHandler = (networkRequestInfo) => {
+    if (this.request_ && this.request_.customData["rmcKey"] && networkRequestInfo.url.endsWith(".ts")) {
+      networkRequestInfo.url += "?" +this.request_.customData.rmcKeyParamName + "=" + this.request_.customData["rmcKey"]; 
+    }
+  };
+  
+  playbackConfig.manifestRequestHandler = requestInfo => {
+    console.log("onManifestRequestHandler");
+    // console.log(requestInfo);
+    if (this.request_ && this.request_.customData["rmcKey"] && (requestInfo.url.endsWith(".m3u8"))) {
+      requestInfo.url += "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; 
+    }
+  };
+
+  this.playerManager_.setMediaUrlResolver((requestData) => {
+    console.log("onMediaUrlResolver - " + requestData.media.contentId);
+    // console.log(requestData);
+
+    // if (this.request_ && this.request_.customData["rmcKey"] && (requestData.media.contentId.endsWith(".m3u8") || requestData.media..endsWith(".ts"))) {
+    //   return requestData.media.contentId + "?" +this.request_.customData.rmcKeyParamName+ "=" + this.request_.customData["rmcKey"]; contentId
+    // }
+
+    return requestData.media.contentId;
+  }); 
+
+  this.playerManager_.setMediaPlaybackInfoHandler((requestData, config) => {
+    console.log("onMediaPlaybackInfoHandler");
+    // console.log(requestData);
+    // console.log(config);
+
+    return config;
+  }); 
+
+  
+  this.playerManager_.setPlaybackConfig(playbackConfig);
   const options = new cast.framework.CastReceiverOptions();
   // Map of namespace names to their types.
   options.customNamespaces = {};
@@ -80,13 +118,33 @@ Player.prototype.setupCallbacks_ = function() {
   this.playerManager_.setMessageInterceptor(
       cast.framework.messages.MessageType.LOAD,
       (request) => {
-        if (!this.request_) {
-          self.initIMA_();
-        }
-        this.request_ = request;
-        this.playerManager_.pause();
+        // if (!this.request_) {
+        //   self.initIMA_();
+        // }
+        this.request_ = request;        
         return request;
       });
+
+  this.playerManager_.addEventListener(
+        cast.framework.events.EventType.MEDIA_STATUS, (event) => {
+          console.log("MEDIA_STATUS - " + event.mediaStatus.playerState + ", " + event.mediaStatus.idleReason);
+          console.log(event);
+    });
+
+  this.playerManager_.addEventListener(
+      cast.framework.events.EventType.PLAYER_LOAD_COMPLETE, () => {
+        console.log("PLAYER_LOAD_COMPLETE");
+
+        if (this.request_.customData.adTags && !this.request_.autoplay) {
+          self.requestAd_(this.request_.customData.adTags, 0);
+        }    
+      });
+
+  this.playerManager_.addEventListener(
+      cast.framework.events.EventType.ERROR, (event) => {
+        console.log("ERROR - " + event.detailedErrorCode);
+        console.log(event);
+  }); 
 };
 
 /**
@@ -103,12 +161,14 @@ Player.prototype.broadcast_ = function(message) {
  * @private
  */
 Player.prototype.initIMA_ = function() {
+  // google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED);
   this.currentContentTime_ = -1;
   let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'), this.mediaElement_);
   // let adDisplayContainer = new google.ima.AdDisplayContainer(document.getElementById('adContainer'));
   adDisplayContainer.initialize();
   this.adsLoader_ = new google.ima.AdsLoader(adDisplayContainer);
-  this.adsLoader_.getSettings().setPlayerType('cast/client-side');
+  this.adsLoader_.getSettings().setPlayerType('cast/line-tv');
+  this.adsLoader_.getSettings().setNumRedirects(10);
   this.adsLoader_.addEventListener(
       google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
       this.onAdsManagerLoaded_.bind(this), false);
@@ -127,6 +187,8 @@ Player.prototype.initIMA_ = function() {
 Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
   let adsRenderingSettings = new google.ima.AdsRenderingSettings();
   adsRenderingSettings.playAdsAfterTime = this.currentContentTime_;
+  adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = false;
+  adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
 
   // Get the ads manager.
   this.adsManager_ = adsManagerLoadedEvent.getAdsManager(
@@ -143,12 +205,32 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
       google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
       this.onContentResumeRequested_.bind(this));
 
+  var events = [google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+    google.ima.AdEvent.Type.CLICK,
+    google.ima.AdEvent.Type.COMPLETE,
+    google.ima.AdEvent.Type.FIRST_QUARTILE,
+    google.ima.AdEvent.Type.LOADED,
+    google.ima.AdEvent.Type.MIDPOINT,
+    google.ima.AdEvent.Type.PAUSED,
+    google.ima.AdEvent.Type.STARTED,
+    google.ima.AdEvent.Type.THIRD_QUARTILE,
+    google.ima.AdEvent.Type.LOG];
+  
+  for (var index in events) {
+    this.adsManager_.addEventListener(events[index], (e) => {console.log("ads - "); console.log(e)}, false, this);
+  }
+
+
   try {
-    this.adsManager_.init(800, 450,
-        google.ima.ViewMode.FULLSCREEN);
+    // this.adsManager_.init(1280, 720, google.ima.ViewMode.NORMAL);
+    this.adsManager_.init(
+      this.mediaElement_.offsetWidth,
+      this.mediaElement_.offsetHeight,
+      google.ima.ViewMode.FULLSCREEN);
     this.adsManager_.start();
   } catch (adError) {
     // An error may be thrown if there was a problem with the VAST response.
+    console.log("ads - onAdError - onAdsManagerLoaded_");
     this.broadcast_('Ads Manager Error: ' + adError.getMessage());
   }
 };
@@ -159,44 +241,92 @@ Player.prototype.onAdsManagerLoaded_ = function(adsManagerLoadedEvent) {
  * @private
  */
 Player.prototype.onAdError_ = function(adErrorEvent) {
+  console.log("ads - onAdError - " + adErrorEvent.getError().toString());
+  console.log(adErrorEvent);
   this.broadcast_('Ad Error: ' + adErrorEvent.getError().toString());
   // Handle the error logging.
   if (this.adsManager_) {
     this.adsManager_.destroy();
   }
   // Play content.
+    // this.request_.autoplay = true;
+    // this.request_.currentTime = this.currentContentTime_;
+    // this.playerManager_.load(this.request_);
+  // this.playerManager_.play();
+
+  // player.playerManager_.play();
+  // document.getElementById("player").style.display = "block"; 
+  if (this.adsPaused_ == false) {
+    this.playerManager_.play();
+    return;
+  }
+
+  this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
+  document.getElementById("isAd").style.display = "none";
+
+  this.request_.autoplay = true;
+  this.request_.currentTime = this.currentContentTime_;
   this.playerManager_.load(this.request_);
-  this.playerManager_.seek(this.currentContentTime_);
 };
 
 /**
  * When content is paused by AdsManager to start playing an ad.
  * @private
  */
-Player.prototype.onContentPauseRequested_ = function() {
+Player.prototype.onContentPauseRequested_ = function(e) {
+  console.log("ads - onContentPauseRequested_");
+  console.log(e);
   this.currentContentTime_ = this.mediaElement_.currentTime;
+  this.currentZIndex = this.mediaElement_.style.zIndex;
   this.broadcast_('onContentPauseRequested,' + this.currentContentTime_);
 
-  this.adMediaElement_.src = this.mediaElement_.src;
+  this.pausedQueueItem = this.playerManager_.getQueueManager().getItems();  
   this.playerManager_.stop();
+  
+  this.mediaElement_.style.display = "block"; 
+  this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style.display = "none";
+
+  document.getElementById("isAd").style.display = "block";
+
+  this.adsPaused_ = true;
 };
 
 /**
  * When an ad finishes playing and AdsManager resumes content.
  * @private
  */
-Player.prototype.onContentResumeRequested_ = function() {
+Player.prototype.onContentResumeRequested_ = function(e) {
+  console.log("ads - onContentResumeRequested_");
+  console.log(e);
   this.broadcast_('onContentResumeRequested');
 
-  this.playerManager_.load(this.request_);
-  this.seek_(this.currentContentTime_);
+  // if (this.playerManager_.getPlayerState() == cast.framework.messages.PlayerState.IDLE) {
+    if (this.adsPaused_ == false) {
+      this.playerManager_.play();
+      return;
+    }
+    this.adsPaused_ = false;
+
+    this.mediaElement_.parentElement.getElementsByClassName("splash")[0].style = "";
+
+    this.request_.autoplay = true;
+    this.request_.currentTime = this.currentContentTime_;
+    this.playerManager_.load(this.request_);
+
+    document.getElementById("isAd").style.display = "none";
+    
+  // }
+  // this.playerManager_.play();
+  // document.getElementById("player").style.display = "block"; 
 };
 
 /**
  * Destroys AdsManager when all requested ads have finished playing.
  * @private
  */
-Player.prototype.onAllAdsCompleted_ = function() {
+Player.prototype.onAllAdsCompleted_ = function(e) {
+  console.log("ads - onAllAdsCompleted_");
+  console.log(e);
   if (this.adsManager_) {
     this.adsManager_.destroy();
   }
@@ -212,13 +342,23 @@ Player.prototype.requestAd_ = function(adTag, currentTime) {
   if (currentTime != 0) {
     this.currentContentTime_ = currentTime;
   }
+  if (this.adsManager_) {
+    this.adsManager_.destroy();
+    this.adsManager_ = null;
+  }
+
+  this.adsPaused_ = false;
+
   let adsRequest = new google.ima.AdsRequest();
   adsRequest.adTagUrl = adTag;
-  adsRequest.linearAdSlotWidth = this.mediaElement_.width;
-  adsRequest.linearAdSlotHeight = this.mediaElement_.height;
-  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.width;
-  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.height / 3;
+  // adsRequest.adTagUrl = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=";
+  adsRequest.linearAdSlotWidth = this.mediaElement_.offsetWidth;
+  adsRequest.linearAdSlotHeight = this.mediaElement_.offsetHeight;
+  adsRequest.nonLinearAdSlotWidth = this.mediaElement_.offsetWidth;
+  adsRequest.nonLinearAdSlotHeight = this.mediaElement_.offsetHeight;
   this.adsLoader_.requestAds(adsRequest);
+
+  this.request_.customData.adTags = null;
 };
 
 /**
